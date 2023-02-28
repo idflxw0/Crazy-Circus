@@ -1,6 +1,7 @@
 package Card;
 
-import java.util.LinkedList;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Podium {
     private LinkedList<Animal>  blue;
@@ -103,13 +104,25 @@ public class Podium {
         }
     }
     public static boolean isValidMove(String input) {
+        /*
+        Set<String> validCommands = Arrays.stream(Move.values())
+                .map(Enum::name)
+                .collect(Collectors.toSet());
+         */
+        Set<String> validCommands = new HashSet<>();
         for (Move move : Move.values()) {
-            if (move.name().equals(input.toUpperCase())) {
-                return true;
+            validCommands.add(move.name());
+        }
+
+        int i = 0;
+        while (i < input.length()) {
+            String command = input.substring(i, i+2);
+            if (validCommands.contains(command)) {
+                i += 2;
+            } else {
+                return false;
             }
         }
-        return false;
+        return true;
     }
-
-
 }
