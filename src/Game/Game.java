@@ -3,17 +3,14 @@ import  Card.*;
 
 import java.security.spec.RSAOtherPrimeInfo;
 import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.LinkedList;
+import java.util.*;
 
 public class Game {
     private ArrayList<Card> cards;
     private Card card;
     private static LinkedList<Player> players;
-    private  Podium startingPodium;
-    private  Podium objectivePodium;
+    private static Podium startingPodium;
+    private static Podium objectivePodium;
     private static final int MAX_CARDS = 24;
     private boolean gameOver;
     private int numPlayers;
@@ -23,67 +20,101 @@ public class Game {
         players = new LinkedList<>();
         card = new Card();
         this.gameOver = false;
+        card.createCards();
     }
 
     //------------Methods----------------
 
     public void start() {
-        System.out.println("Bienvenue dans le jeu Crazy Circus!");
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Combien de joueurs ? : ");
-        numPlayers = sc.nextInt();
-        String[] names = new String[numPlayers];
-        for (int i = 0; i < numPlayers; i++) {
-            System.out.print("Entrez le nom du joueur " + (i+1) + ": ");
-            names[i] = sc.next();
-            while (names[i].length() > 2) {
-                System.out.println("Votre nom doit avoir 2 caractères maximum.");
-                System.out.print("Ressaisissez votre nom : ");
-                names[i] = sc.next();
-            }
-            while (playerExists(names[i])) {
-                System.out.println("Nom déjà pris. Veuillez en saisir un autre.");
-                names[i] = sc.next();
-            }
-            addPlayer(names);
-        }
-    }
+        System.out.println("Bienvenue dans le jeu de la carte");
 
-    public static void playGame(Podium startingPodium, Podium objectivePodium) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Combien de joueurs ? : ");
+
+        numPlayers = sc.nextInt();
+        String name;
+        for (int i = 0; i< numPlayers; i++) {
+            System.out.print("Entrez votre nom:");
+            name = sc.next();
+            while(name.length() >2) {
+                System.out.println("Le nom doit faire 2 lettres");
+                System.out.print("Entrez votre nom:");
+                name = sc.next();
+            }
+            while(PlayerExists(name)) {
+                System.out.println("Le joueur " + name + " existe déjà.");
+                System.out.print("Ressaisissez Entrez votre nom:");
+                name = sc.next();
+            }
+            this.addPlayer(name);
+        }
+        beginPlay();
+        playGame();
+    }
+    private void beginPlay() {
+        startingPodium = card.getRandomCard();
+        objectivePodium = card.getRandomCard();
+    }
+    public static void playGame() {
         Scanner sc = new Scanner(System.in);
         String input;
-
         System.out.print(startingPodium.toString(objectivePodium));
         boolean finished = false;
         while(true){
-            System.out.print("Enter a move: ");
+            System.out.println("A vous de jouer: ");
             input = sc.nextLine();
             if (input.equals("quit")) {
                 break;
             }
-            try {
-                startingPodium.processInput(input);
-                System.out.println(startingPodium.toString(objectivePodium));
-                updateLength(startingPodium);
-                if (samePosition(startingPodium, objectivePodium)) {
-                    System.out.println("TROUVER");
-                    break;
+            String name = input.substring(0, 2);
+            String commands = input.substring(3);
+            if (PlayerExists(name)) {
+                try {
+                    startingPodium.processInput(commands);
+                    System.out.println(startingPodium.toString(objectivePodium));
+                    updateLength(startingPodium);
+                    if (samePosition(startingPodium, objectivePodium)) {
+                        System.out.println("TROUVER");
+                        break;
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("!!!");
                 }
-            } catch (IllegalArgumentException e) {
-                System.out.println("!!!");
             }
         }
     }
+
     /**
      * @brief Ajoute un joueur à la liste des joueurs
      * @param name permet de recuperer le nom du joueur
      */
-    public void addPlayer(String[] name) {
-        for (String s : name) {
-            Player p = new Player(s);
-            players.add(p);
-        }
+    public void addPlayer(String name) {
+        Player p = new Player(name);
+        players.add(p);
+        System.out.println("Le joueur " + name + " a été ajouté.");
+
     }
+    public static boolean PlayerExists(String name) {
+        return eleminateDoubles(new Player(name));
+    }
+    /**
+     * @brief Permet de verifier si le nom du joueur est déjà pris
+     * @param p Le joueur
+     * @return true si le nom du joueur est déjà pris, false sinon
+     */
+    public static boolean eleminateDoubles(Player p) {
+        for (Player player : players) {
+            if (player != p && player.getPlayers().equals(p.getPlayers())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
 
     /**
      * @breif Permet de savoir si les deux podiums ont la même longueur
@@ -114,38 +145,21 @@ public class Game {
         return startingPodium.getBlue().equals(objectivePodium.getBlue()) && startingPodium.getRed().equals(objectivePodium.getRed());
     }
 
-    /**
-     * @breif Permet de savoir si le nom du joueur est déjà pris
-     * @param p Le joueur
-     * @return true si le nom du joueur est déjà pris, false sinon
-     */
-    public static boolean eleminateDoubles(Player p) {
-        for (Player player : players) {
-            if (player != p && player.getPlayers().equals(p.getPlayers())) {
-                return true;
-            }
-        }
-        return false;
-    }
+
+
     public void getPlayersNames() {
         for (Player p : players) {
             System.out.println(p.getPlayers());
         }
     }
-    private boolean playerExists(String name) {
-        for (Player p : players) {
-            if (p.getPlayers().equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
+
+    /*
     public static void main(String[] args) {
         Podium podium = new Podium();
         Podium objectivePodium = new Podium();
-        Game game = new Game();
-        game.start();
-        game.getPlayersNames();
+        //Game game = new Game();
+        //game.start();
+        //game.getPlayersNames();
         //Card card = new Card();
         podium.addBlue(Animal.WHITE_BEAR);
         podium.addRed(Animal.LION);
@@ -160,4 +174,6 @@ public class Game {
         playGame(podium, objectivePodium);
 
     }
+
+     */
 }
