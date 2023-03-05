@@ -19,41 +19,36 @@ public class Game {
     private int numPlayers;
 
     //------------Constructors----------------
-    public Game(String[] args) {
+    public Game() {
         players = new LinkedList<>();
         card = new Card();
         this.gameOver = false;
-        addPlayer(args);
     }
 
-    public void addPlayer(String[] name) {
-        for (String s : name) {
-            Player p = new Player(s);
-            players.add(p);
-        }
-    }
-    public void Start() {
-        System.out.println("Bienvenue dans le jeu de la carte");
+    //------------Methods----------------
+
+    public void start() {
+        System.out.println("Bienvenue dans le jeu Crazy Circus!");
         Scanner sc = new Scanner(System.in);
         System.out.print("Combien de joueurs ? : ");
         numPlayers = sc.nextInt();
-        String s= "";
+        String[] names = new String[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
-            System.out.print("Entre votre nom : ");
-            s = sc.next();
-            while(s.length() > 2) {
-                System.out.println("votre nom doit etre de 2 caractères maximum");
-                System.out.print("ressaisissez votre nom : ");
-                s = sc.next();
+            System.out.print("Entrez le nom du joueur " + (i+1) + ": ");
+            names[i] = sc.next();
+            while (names[i].length() > 2) {
+                System.out.println("Votre nom doit avoir 2 caractères maximum.");
+                System.out.print("Ressaisissez votre nom : ");
+                names[i] = sc.next();
             }
-            while (eleminateDoubles(new Player(s))) {
-                System.out.println("Nom déjà pris : Veuillez en saisir un autre.");
-                s = sc.next();
+            while (playerExists(names[i])) {
+                System.out.println("Nom déjà pris. Veuillez en saisir un autre.");
+                names[i] = sc.next();
             }
-            Player p = new Player(s);
-            players.add(p);
+            addPlayer(names);
         }
     }
+
     public static void playGame(Podium startingPodium, Podium objectivePodium) {
         Scanner sc = new Scanner(System.in);
         String input;
@@ -77,6 +72,16 @@ public class Game {
             } catch (IllegalArgumentException e) {
                 System.out.println("!!!");
             }
+        }
+    }
+    /**
+     * @brief Ajoute un joueur à la liste des joueurs
+     * @param name permet de recuperer le nom du joueur
+     */
+    public void addPlayer(String[] name) {
+        for (String s : name) {
+            Player p = new Player(s);
+            players.add(p);
         }
     }
 
@@ -122,14 +127,25 @@ public class Game {
         }
         return false;
     }
-    public void getPlayersnames() {
+    public void getPlayersNames() {
         for (Player p : players) {
             System.out.println(p.getPlayers());
         }
     }
+    private boolean playerExists(String name) {
+        for (Player p : players) {
+            if (p.getPlayers().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
     public static void main(String[] args) {
         Podium podium = new Podium();
         Podium objectivePodium = new Podium();
+        Game game = new Game();
+        game.start();
+        game.getPlayersNames();
         //Card card = new Card();
         podium.addBlue(Animal.WHITE_BEAR);
         podium.addRed(Animal.LION);
@@ -142,7 +158,6 @@ public class Game {
         //podium =  card.getRandomCard();
         //objectivePodium = card.getRandomCard();
         playGame(podium, objectivePodium);
-
 
     }
 }

@@ -17,7 +17,6 @@ public class Podium {
         length_blue = 0;
         length_red = 0;
     }
-
     public Podium(LinkedList<Animal> bluePodium, LinkedList<Animal> redPodium) {
         this.blue = bluePodium;
         this.red = redPodium;
@@ -30,8 +29,6 @@ public class Podium {
         this.length_blue = podium.length_blue;
         this.length_red = podium.length_red;
     }
-
-
 
 
     //------------Getters----------------
@@ -204,7 +201,7 @@ public class Podium {
     }
     public String displayMoves() {
         return String.format(" %5s %5s  %15s\n %5s %5s %15s\n %s", "KI : Bleu-->Rouge", "|", "MA : Rouge ^",
-                "LO : Rouge-->Bleu", "|", "NI : Bleu ^", "SO : Bleu<-->Rouge");
+                "LO : Blue<--Rouge", "|", "NI : Bleu ^", "SO : Bleu<-->Rouge");
     }
     /**
      * @return Retour de la chaîne de caractères finale
@@ -302,8 +299,4 @@ public class Podium {
         sb.append("\n");
         return sb.toString();
     }
-
-
-
-
 }
