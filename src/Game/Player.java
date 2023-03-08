@@ -5,23 +5,25 @@ import java.util.List;
 
 public class Player {
     private List<String> players;
-    private int score;
+    private  String currentPlayer;
+    private static int score;
     private int error;
     private boolean canPlay;
 
     public Player(String player) {
         this.players = new LinkedList<>();
+        this.currentPlayer = player;
         this.players.add(player);
         score = 0;
         error = 0;
-        canPlay = false;
+        canPlay = true;
     }
 
     //------------Getters----------------
     public List<String> getPlayers() {
         return players;
     }
-    public int getScore() {
+    public static int getScore() {
         return score;
     }
     public int getError() {
@@ -29,6 +31,10 @@ public class Player {
     }
     public boolean canPlay() {
         return canPlay;
+    }
+
+    public String getName() {
+        return this.currentPlayer;
     }
 
     //------------Setters----------------
@@ -41,14 +47,14 @@ public class Player {
     /**
      * @param points Les points to set
      */
-    public void setScore(int points) {
-        this.score = points;
+    public void setScore() {
+        score++;
     }
     /**
-     * @param error L'erreur to set
+     * @param L'erreur to set
      */
-    public void setError(int error) {
-        this.error = error;
+    public void setError() {
+        error++;
     }
     /**
      * @param canPlay the peutJouer to set
@@ -60,6 +66,6 @@ public class Player {
     //------------Methods----------------
     @Override
     public String toString() {
-        return "Joueur [joueur=" + getPlayers() + ", points=" + getScore() + ", erreur=" + getError() + "]";
+        return  getPlayers().toString() +  " [points=" + getScore() + ", erreur=" + getError() + "]";
     }
 }

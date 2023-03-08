@@ -299,4 +299,11 @@ public class Podium {
         sb.append("\n");
         return sb.toString();
     }
+
+    public Podium copyPodium() {
+        Podium copy = new Podium();
+        copy.blue = new LinkedList<>(blue);
+        copy.red = new LinkedList<>(red);
+        return copy;
+    }
 }

@@ -17,11 +17,13 @@ public class Card {
     public Card() {
         this.cards = new LinkedList<>();
         this.rand = new Random();
-        this.createCards();
     }
 
     public LinkedList<Podium> getCards() {
         return cards;
+    }
+    public void getCardslength() {
+        System.out.println((cards.size()));
     }
 
     public boolean isEmpty() {
