@@ -129,8 +129,8 @@ public class Podium {
         if (blue.size() > 0 && blue.size() <= 3) {
             Animal animal = blue.removeFirst(); // Retire le dernier élément de la liste
             Animal animal1 = blue.removeLast(); // Retire le premier élément de la liste
-            blue.addLast(animal); // Ajoute l'élément à la fin de la liste
-            blue.addFirst(animal1); // Ajoute l'élément au début de la liste
+            blue.add(animal1); // Ajoute l'élément à la fin de la liste
+            blue.addLast(animal); // Ajoute l'élément au début de la liste
         } else {
             System.out.println("Ordre incorrect ! Vous n'avez plus le droit de jouer ce tour."); // Affiche un message d'erreur
         }
