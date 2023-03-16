@@ -4,19 +4,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Podium {
-    private LinkedList<Animal> blue;
-    private LinkedList<Animal> red;
-    private final int MAX_LENGTH = 3;
-    private int length_blue;
-    private int length_red;
+    private LinkedList<Animal> blue; // Liste des animaux du podium bleu
+    private LinkedList<Animal> red; // Liste des animaux du podium rouge
+    private final int MAX_LENGTH = 3; // Longueur maximale des podiums
+    private int length_blue; // Longueur du podium bleu
+    private int length_red; // Longueur du podium rouge
 
     //------------Constructors----------------
     public Podium() {
-        blue = new LinkedList<>();
-        red = new LinkedList<>();
-        length_blue = 0;
-        length_red = 0;
+        blue = new LinkedList<>(); // On crée une liste d'animaux pour le podium bleu
+        red = new LinkedList<>(); // On crée une liste d'animaux pour le podium rouge
+        length_blue = 0; // On initialise la longueur du podium bleu à 0
+        length_red = 0; // On initialise la longueur du podium rouge à 0
     }
+
     public Podium(LinkedList<Animal> bluePodium, LinkedList<Animal> redPodium) {
         this.blue = bluePodium;
         this.red = redPodium;
@@ -109,7 +110,7 @@ public class Podium {
     }
 
     /**
-     * Permet de deplacer l'animal du podium rouge vers le sommet du podium rouge
+     * 1Permet de deplacer l'animal du podium rouge vers le sommet du podium rouge
      */
     public void MA() {
         if (red.size() > 0 && red.size() <= 3) {
@@ -199,13 +200,18 @@ public class Podium {
             }
         }
     }
+
+    /**
+     * @breif Permet d'afficher les mouvements possibles
+     * @return Retour de la chaîne de caractères finale
+     */
     public String displayMoves() {
         return String.format(" %5s %5s  %15s\n %5s %5s %15s\n %s", "KI : Bleu-->Rouge", "|", "MA : Rouge ^",
                 "LO : Blue<--Rouge", "|", "NI : Bleu ^", "SO : Bleu<-->Rouge");
     }
     /**
-     * @return Retour de la chaîne de caractères finale
      * @breif Permet d'afficher le podium
+     * @return Retour de la chaîne de caractères finale
      */
     public String toString(Podium objectivePodium) {
         StringBuilder sb = new StringBuilder();
@@ -300,6 +306,10 @@ public class Podium {
         return sb.toString();
     }
 
+    /**
+     * @breif Permet de copier le podium
+     * @return Retourne le podium copié
+     */
     public Podium copyPodium() {
         Podium copy = new Podium();
         copy.blue = new LinkedList<>(blue);

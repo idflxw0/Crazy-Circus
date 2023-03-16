@@ -2,40 +2,60 @@ package Card;
 
 import java.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
+
 
 public class Card {
 
     private LinkedList<Podium> cards;
     private Random rand;
+    private final int MAX_CARD = 24;
+
+    /**
+     * @brief Constructeur de la classe Card
+     */
     public Card() {
         this.cards = new LinkedList<>();
         this.rand = new Random();
     }
 
+    /**
+     * @brief permet de récupérer la liste de carte
+     * @return the cards
+     */
     public LinkedList<Podium> getCards() {
         return cards;
     }
+
+    /**
+     * @brief permet de récupérer la taille de la liste de carte
+     */
     public void getCardslength() {
         System.out.println((cards.size()));
     }
 
+    /**
+     * @brief permet de savoir si la liste de carte est vide
+     * @return true si la liste est vide, false sinon
+     */
     public boolean isEmpty() {
         return cards.isEmpty();
     }
+
+    /**
+     * @brief permet de récupérer une carte aléatoire
+     * @return une carte aléatoire
+     */
     public Podium getRandomCard() {
-        assert (!this.isEmpty());
-        Podium p = cards.get(rand.nextInt(this.cards.size()));
-        cards.remove(p);
-        return p;
+        assert (!this.isEmpty()); // On vérifie que la liste n'est pas vide
+        Podium p = cards.get(rand.nextInt(this.cards.size())); // On récupère une carte aléatoire
+        cards.remove(p); // On la supprime de la liste
+        return p; // On la retourne
     }
 
+    /**
+     * @brief permet de créer les cartes
+     */
     public void createCards() {
         Animal A = Animal.LION;
         Animal B = Animal.ELEPHANT;

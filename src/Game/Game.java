@@ -2,34 +2,28 @@ package Game;
 
 import Card.*;
 
-import java.io.IOException;
-import java.security.spec.RSAOtherPrimeInfo;
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class Game {
-    private static final int MAX_CARDS = 24;
-    private static Card card;
-    private static LinkedList<Player> players;
-    private static Podium startingPodium;
-    private static Podium objectivePodium;
-    private ArrayList<Card> cards;
-    private static boolean gameOver;
-    private int numPlayers;
+    private static final int MAX_CARDS = 24; // Nombre de cartes dans le jeu
+    private static Card card; // On crée une carte
+    private static LinkedList<Player> players; // On crée une liste de joueurs
+    private static Podium startingPodium; // On crée un podium de départ
+    private static Podium objectivePodium; // On crée un podium d'arrivée
+    private ArrayList<Card> cards; // On crée une liste de cartes
+    private static boolean gameOver; // On crée une variable qui permet de savoir si la partie est finie
+    private int numPlayers; // On crée une variable qui permet de savoir le nombre de joueurs
 
     //------------Constructors----------------
-    public Game(String[] args) {
-        players = new LinkedList<>();
-        card = new Card();
-        gameOver = false;
-        card.createCards();
-        addPlayer(args);
-        FirstGame();
+    public Game(String[] args) { // On crée un constructeur qui prend en paramètre un tableau de String
+        players = new LinkedList<>(); // On initialise la liste de joueurs
+        card = new Card(); // On initialise la carte
+        gameOver = false; // On initialise la variable gameOver à false
+        card.createCards(); // On crée les cartes
+        addPlayer(args); // On ajoute les joueurs
+        CreateCards(); // On lance la première partie
     }
 
-    public static void getScore() {
-        System.out.println(Player.getScore());
-    }
 
     /**
      * @param name Le nom du joueur
@@ -41,37 +35,19 @@ public class Game {
     }
 
     /**
-     * @param p Le joueur
+     * @param p permet de vérifier si le nom du joueur est déjà pris
      * @return true si le nom du joueur est déjà pris, false sinon
      * @brief Permet de verifier si le nom du joueur est déjà pris
      */
     public static boolean eleminateDoubles(Player p) {
-        for (Player player : players) {
-            if (player != p && player.getPlayers().equals(p.getPlayers())) {
-                return true;
+        for (Player player : players) { // On parcourt la liste de joueurs
+            if (player != p && player.getPlayers().equals(p.getPlayers())) { // Si le nom du joueur est déjà pris
+                return true; // On retourne true
             }
         }
-        return false;
+        return false; // On retourne false
     }
 
-    /**
-     * @param startingPodium  Le podium de départ
-     * @param objectivePodium Le podium d'objectif
-     * @return true si les deux podiums ont la même longueur, false sinon
-     * @breif Permet de savoir si les deux podiums ont la même longueur
-     */
-    public static boolean sameLength(Podium startingPodium, Podium objectivePodium) {
-        return startingPodium.getLength_blue() == objectivePodium.getLength_blue() && startingPodium.getLength_red() == objectivePodium.getLength_red();
-    }
-
-    /**
-     * @param startingPodium Le podium de départ
-     * @breif Permet de mettre à jour la longueur des podiums
-     */
-    public static void updateLength(Podium startingPodium) {
-        startingPodium.setBlueLength();
-        startingPodium.setRedLength();
-    }
 
     /**
      * @param startingPodium  Le podium de départ
@@ -80,7 +56,7 @@ public class Game {
      * @breif Permet de savoir si les animaux sur les deux podiums sont à la même position
      */
     public static boolean samePosition(Podium startingPodium, Podium objectivePodium) {
-        return startingPodium.getBlue().equals(objectivePodium.getBlue()) && startingPodium.getRed().equals(objectivePodium.getRed());
+        return startingPodium.getBlue().equals(objectivePodium.getBlue()) && startingPodium.getRed().equals(objectivePodium.getRed()); // On retourne true si les animaux sur les deux podiums sont à la même position, false sinon
     }
 
     /**
@@ -94,8 +70,6 @@ public class Game {
 
         boolean finished = false; // On initialise la variable finished à false pour pouvoir jouer
 
-        System.out.println("Bienvenue dans le jeu de CRAZY CIRCUS!");
-        System.out.println("A vous de jouer!");
 
         int numErrors = 0; // Permet de compter le nombre d'erreurs
 
@@ -113,6 +87,7 @@ public class Game {
 
             String command = input.substring(3).toUpperCase(); // On récupère la commande
 
+            int winCount = 0; // Permet de compter le nombre de victoires
             if (previousPlayerWhoMadeAnError != null && previousPlayerWhoMadeAnError.getName().equals(name)) { // Si le joueur a déjà fait une erreur, il ne peut plus jouer ce tour
                 System.out.println("Vous avez déjà fait une erreur, vous ne pouvez plus jouer ce tour");
             }
@@ -122,10 +97,9 @@ public class Game {
                 System.out.println();
                 try { // On essaye de jouer
                     startingPodium.processInput(command); // On joue
-
                     if (samePosition(startingPodium, objectivePodium)) { // Si les animaux sont à la même position, on a gagné
                         System.out.println("Bien joué! Vous avez gagné!");
-
+                        winCount++;
                         for (int i = 0; i < players.size(); i++) { // On met à jour le score du joueur
 
                             if (players.get(i).getName().equals(name)) { // Si le joueur existe, on met à jour son score
@@ -134,10 +108,20 @@ public class Game {
 
                             }
                         }
-                        playGame(); // On relance une partie
+                        System.out.println("Voulez-vous continuer a jouer? (O/N)"); // On demande si on veut continuer à jouer
+                        String answer = scanner.nextLine(); // On récupère l'input de l'utilisateur
+                        if (answer.toUpperCase().equals("O")) { // Si on veut continuer à jouer
+                            CreateCards(); // On crée des nouveaux cartes
+                            playGame(); // On relance une partie
+
+                        } else {
+                            System.out.println("Voici le score: "); // On affiche le score
+                            showScore();
+                            System.exit(0); // On quitte le jeu
+
+                        }
                     } else { // Si les animaux ne sont pas à la même position, on a perdu
                         System.out.println("Vous avez perdu!");
-
                         for (int i = 0; i < players.size(); i++) { // On met à jour le score du joueur
 
                             if (players.get(i).getName().equals(name)) {
@@ -148,16 +132,15 @@ public class Game {
                                     numErrors++;
                                 }
                                 previousPlayerWhoMadeAnError = players.get(i); // On met à jour le joueur qui a fait une erreur
-
                                 startingPodium = copyOfStaringPodium; // On remet le podium de départ à son état initial
                             }
-
                             if (numErrors == players.size()) { // Si le nombre d'erreurs est égal au nombre de joueurs, on change la carte objective
-                                System.out.println("Carte objective a changé");
-                                startingPodium = objectivePodium; // On met à jour le podium de départ
+                                startingPodium = card.getRandomCard(); // On met à jour le podium de départ
                                 objectivePodium = card.getRandomCard(); // On change la carte objective
-                                System.out.println("nouveau objective carte: ");
-                                System.out.println(startingPodium.toString(objectivePodium));
+                                numErrors = 0; // On remet le nombre d'erreurs à 0
+                                previousPlayerWhoMadeAnError = null; // On remet le joueur qui a fait une erreur à null
+                                System.out.println("Carte objective a changé");
+
                             }
                         }
                     }
@@ -172,88 +155,74 @@ public class Game {
 
             if(getGameOver()) { // Si gameOver est à true, on arrête la partie
                 finished = true;
-            }
-        }
-    }
+                System.out.println("La partie est terminée");
+                System.out.println("Voici le score: ");
+                showScore(); // On affiche le score
 
-    public static void continueToPlay() throws Exception {
-        assert (!getGameOver());
-
-    }
-
-    public static void addScore() {
-        for (Player p : players) {
-            if (samePosition(startingPodium, objectivePodium)) {
-                // p.setScore(1);
-            }
-        }
-    }
-
-    public static void handlePlayerError(String playerName) {
-        for (Player player : players) {
-            if (player.getPlayers().contains(playerName)) {
-                player.setError();
-                player.setCanPlay(false);
-                System.out.println("vous ne pouvez plus jouer");
-                return;
             }
         }
     }
 
     //------------Getters----------------
-    public static boolean getGameOver() {
-        return gameOver;
-    }
 
-    public void getPlayersNames() {
-        for (Player p : players) {
-            System.out.println(p.getPlayers());
-        }
+    /**
+     * @brien Permet de savoir si la partie est terminée
+     * @return gameOver
+     */
+    public static boolean getGameOver() {
+        return gameOver; // On retourne la valeur de gameOver
     }
 
     //------------Setters----------------
+
+    /**
+     * @brief Permet de mettre à jour la variable gameOver
+     */
     public static void setGameOver() {
-        if (card.isEmpty()) {
+        if (card.isEmpty()) { // Si le paquet de cartes est vide, on met gameOver à true
             gameOver = true;
         }
     }
 
     //------------Methods----------------
-    public void start() {
-        System.out.println("Bienvenue dans le jeu de CRAZY CIRCUS!");
-        Scanner sc = new Scanner(System.in);
-        String name;
-        String[] names = new String[numPlayers];
 
-    }
-
-    private void FirstGame() {
-        startingPodium = card.getRandomCard();
-        objectivePodium = card.getRandomCard();
+    /**
+     * @Brief Permet de créer les cartes de départ et d'objectif
+     */
+    private static void CreateCards() {
+        startingPodium = card.getRandomCard(); // On crée une carte de départ
+        objectivePodium = card.getRandomCard(); // On crée une carte d'objectif
     }
 
     /**
+     * @brief Permet d'ajouter les joueurs
      * @param name Le nom du joueur
      * @throws IllegalArgumentException Si le nom du joueur n'est pas composé de deux lettres
-     * @brief Permet d'ajouter les joueurs
      */
     public void addPlayer(String[] name) throws IllegalArgumentException {
-        for (String s : name) {
+        for (String s : name) { // On ajoute les joueurs
             try {
-                if (s.length() != 2) {
+                if (s.length() != 2) { // Si le nom du joueur n'est pas composé de deux lettres, on affiche un message d'erreur
                     throw new IllegalArgumentException("Le nom du joueur doit être composé de deux lettres");
-                } else {
+                } else { // Si le nom du joueur est composé de deux lettres, on ajoute le joueur
                     Player p = new Player(s.toUpperCase());
                     players.add(p);
                     System.out.println("Le joueur " + s + " a été ajouté.");
                     numPlayers++;
                 }
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) { // Si on ne peut pas ajouter le joueur, on affiche un message d'erreur
                 System.out.println(e.getMessage());
                 System.exit(1);
             }
         }
     }
 
-
+    /**
+     * @breif Permet d'afficher le score
+     */
+    private static void showScore(){
+        for (Player p : players) { // On affiche le score
+            System.out.println(p.getName() + " : " + p.getScore());
+        }
+    }
 }
